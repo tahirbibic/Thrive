@@ -1,212 +1,254 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>THRIVE</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+const Home = () => {
+  return (
+    <div className="home-page">
+      <style>{`
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: "Segoe UI", sans-serif;
+        }
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", sans-serif;
-    }
+        body {
+          overflow-x: hidden;
+        }
 
-    body {
-      background: #0f172a;
-      color: white;
-    }
+        .home-page {
+          min-height: 100vh;
+          background: #0f172a;
+          color: white;
+        }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 60px;
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(10px);
-    }
+        .container {
+          width: 1200px;
+          margin: 0 auto;
+        }
 
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      color: #38bdf8;
-    }
+        .header {
+          background: rgba(255,255,255,0.03);
+          backdrop-filter: blur(10px);
+        }
 
-    nav a {
-      margin-left: 25px;
-      text-decoration: none;
-      color: white;
-      opacity: 0.8;
-    }
+        .header-inner {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 25px 0;
+        }
 
-    nav a:hover {
-      opacity: 1;
-    }
+        .logo {
+          font-size: 26px;
+          font-weight: bold;
+          letter-spacing: 3px;
+          color: #38bdf8;
+        }
 
-    .hero {
-      min-height: 90vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 40px;
-      background: radial-gradient(circle at top, #1e293b, #020617);
-    }
+        .nav {
+          display: flex;
+          gap: 35px;
+        }
 
-    .hero-content {
-      max-width: 700px;
-    }
+        .nav a {
+          text-decoration: none;
+          color: white;
+          opacity: 0.8;
+          font-size: 15px;
+          transition: 0.2s;
+        }
 
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-    }
+        .nav a:hover {
+          opacity: 1;
+          transform: translateY(-1px);
+        }
 
-    .hero span {
-      color: #38bdf8;
-    }
+        .hero {
+          height: calc(100vh - 90px);
+          display: flex;
+          align-items: center;
+          background: radial-gradient(circle at top, #1e293b, #020617);
+        }
 
-    .hero p {
-      font-size: 1.1rem;
-      opacity: 0.8;
-      margin-bottom: 35px;
-    }
+        .hero-inner {
+          width: 100%;
+          text-align: center;
+        }
 
-    .hero-buttons button {
-      padding: 14px 28px;
-      margin: 10px;
-      border-radius: 30px;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
+        .hero-content {
+          width: 850px;
+          margin: 0 auto;
+        }
 
-    .btn-primary {
-      background: #38bdf8;
-      color: #020617;
-      font-weight: bold;
-    }
+        .hero h1 {
+          font-size: 3.8rem;
+          margin-bottom: 25px;
+        }
 
-    .btn-primary:hover {
-      transform: scale(1.05);
-    }
+        .hero span {
+          color: #38bdf8;
+        }
 
-    .btn-secondary {
-      background: transparent;
-      border: 2px solid #38bdf8;
-      color: #38bdf8;
-    }
+        .hero p {
+          font-size: 1.15rem;
+          opacity: 0.85;
+          margin-bottom: 45px;
+          line-height: 1.7;
+        }
 
-    .btn-secondary:hover {
-      background: #38bdf8;
-      color: #020617;
-    }
+        .hero-buttons {
+          display: flex;
+          justify-content: center;
+          gap: 20px;
+        }
 
-    .features {
-      padding: 80px 60px;
-      background: #020617;
-      text-align: center;
-    }
+        .hero-buttons button {
+          padding: 16px 36px;
+          border-radius: 40px;
+          border: none;
+          font-size: 16px;
+          cursor: pointer;
+          transition: 0.25s;
+        }
 
-    .features h2 {
-      font-size: 2.2rem;
-      margin-bottom: 50px;
-    }
+        .btn-primary {
+          background: #38bdf8;
+          color: #020617;
+          font-weight: bold;
+        }
 
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-    }
+        .btn-primary:hover {
+          transform: scale(1.08);
+          box-shadow: 0 10px 30px rgba(56,189,248,0.35);
+        }
 
-    .feature-card {
-      background: #0f172a;
-      padding: 30px;
-      border-radius: 16px;
-      transition: 0.3s;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
+        .btn-secondary {
+          background: transparent;
+          border: 2px solid #38bdf8;
+          color: #38bdf8;
+        }
 
-    .feature-card:hover {
-      transform: translateY(-8px);
-      border-color: #38bdf8;
-    }
+        .btn-secondary:hover {
+          background: #38bdf8;
+          color: #020617;
+        }
 
-    .feature-card h3 {
-      margin-bottom: 10px;
-      color: #38bdf8;
-    }
+        .features {
+          background: #020617;
+          padding: 120px 0;
+        }
 
-    footer {
-      padding: 30px;
-      text-align: center;
-      background: #020617;
-      opacity: 0.6;
-      font-size: 14px;
-    }
-  </style>
-</head>
+        .features h2 {
+          text-align: center;
+          font-size: 2.6rem;
+          margin-bottom: 70px;
+        }
 
-<body>
-  <header>
-    <div class="logo">THRIVE</div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Challenges</a>
-      <a href="#">Community</a>
-      <a href="#">Login</a>
-    </nav>
-  </header>
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 35px;
+        }
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Grow socially. <span>Live boldly.</span></h1>
-      <p>
-        THRIVE je interaktivna platforma koja ti pomaže da razviješ društvene veštine,
-        povećaš samopouzdanje i svakog dana napraviš mali iskorak iz zone komfora.
-      </p>
+        .feature-card {
+          background: #0f172a;
+          padding: 35px;
+          border-radius: 18px;
+          transition: 0.3s;
+          border: 1px solid rgba(255,255,255,0.06);
+        }
 
-      <div class="hero-buttons">
-        <button class="btn-primary">Start Today</button>
-        <button class="btn-secondary">How it works</button>
-      </div>
+        .feature-card:hover {
+          transform: translateY(-12px);
+          border-color: #38bdf8;
+          box-shadow: 0 15px 40px rgba(56,189,248,0.18);
+        }
+
+        .feature-card h3 {
+          margin-bottom: 14px;
+          color: #38bdf8;
+          font-size: 1.2rem;
+        }
+
+        .feature-card p {
+          opacity: 0.85;
+          line-height: 1.6;
+        }
+
+        .footer {
+          background: #020617;
+          padding: 35px 0;
+          text-align: center;
+          opacity: 0.6;
+          font-size: 14px;
+        }
+      `}</style>
+
+      <header className="header">
+        <div className="container header-inner">
+          <div className="logo">THRIVE</div>
+          <nav className="nav">
+            <a href="#">Početna</a>
+            <a href="#">Izazovi</a>
+            <a href="#">Zajednica</a>
+            <a href="#">Prijavite se</a>
+          </nav>
+        </div>
+      </header>
+
+      <section className="hero">
+        <div className="container hero-inner">
+          <div className="hero-content">
+            <h1>
+            <span>Van okvira.</span>
+            </h1>
+
+            <p>
+              THRIVE je interaktivna platforma koja ti pomaže da razviješ društvene veštine,
+              povećaš samopouzdanje i svakog dana napraviš mali iskorak iz zone komfora.
+            </p>
+
+            <div className="hero-buttons">
+              <button className="btn-primary">Počni danas</button>
+              <button className="btn-secondary">Kako to funkcioniše</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="features">
+        <div className="container">
+          <h2>Kako THRIVE pomaže tvoj rast</h2>
+
+          <div className="features-grid">
+            <div className="feature-card">
+              <h3>Dnevni izazovi</h3>
+              <p>Personalizovani dnevni izazovi koji te postepeno vode van zone komfora.</p>
+            </div>
+
+            <div className="feature-card">
+              <h3>Izgraditelj samopouzdanosti</h3>
+              <p>Sistem za izgradnju samopouzdanja kroz male, ali konstantne korake.</p>
+            </div>
+
+            <div className="feature-card">
+              <h3>Praćenje napretka</h3>
+              <p>Vizuelni prikaz tvog rasta i društvenog napretka.</p>
+            </div>
+
+            <div className="feature-card">
+              <h3>Zajednica</h3>
+              <p>Povezivanje sa drugima, timski izazovi i deljenje iskustava.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="footer">
+        <div className="container">
+          © 2026 THRIVE — Van okvira.
+        </div>
+      </footer>
     </div>
-  </section>
+  );
+};
 
-  <!-- FEATURES -->
-  <section class="features">
-    <h2>How THRIVE helps you grow</h2>
-
-    <div class="features-grid">
-      <div class="feature-card">
-        <h3>Daily Challenges</h3>
-        <p>Personalizovani dnevni izazovi koji te postepeno vode van zone komfora.</p>
-      </div>
-
-      <div class="feature-card">
-        <h3>Confidence Builder</h3>
-        <p>Sistem za izgradnju samopouzdanja kroz male, ali konstantne korake.</p>
-      </div>
-
-      <div class="feature-card">
-        <h3>Progress Tracking</h3>
-        <p>Vizuelni prikaz tvog rasta i društvenog napretka.</p>
-      </div>
-
-      <div class="feature-card">
-        <h3>Community</h3>
-        <p>Povezivanje sa drugima, timski izazovi i deljenje iskustava.</p>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    © 2026 THRIVE — Z. Live boldly.
-  </footer>
-
-</body>
-</html>
+export default Home;
