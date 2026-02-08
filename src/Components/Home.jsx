@@ -1,59 +1,88 @@
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 const Home = () => {
+  const navigate = useNavigate();
+  const lastScrollY = useRef(0);
+  const [showHeader, setShowHeader] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY < 80) {
+        setShowHeader(true);
+      } else if (currentScrollY > lastScrollY.current) {
+        setShowHeader(false);
+      } else {
+        setShowHeader(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="home-page">
+    <>
       <style>{`
+        html, body, #root {
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          overflow-x: hidden;
+        }
+
         * {
           margin: 0;
           padding: 0;
           box-sizing: border-box;
-          font-family: "Segoe UI", sans-serif;
+          font-family: "Inter", sans-serif;
+          scroll-behavior: smooth;
         }
 
-        body {
-          overflow-x: hidden;
-        }
-
-        .home-page {
+        .home {
           min-height: 100vh;
-          background: #0f172a;
+          background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
           color: white;
-        }
-
-        .container {
-          width: 1200px;
-          margin: 0 auto;
         }
 
         .header {
-          background: rgba(255,255,255,0.03);
-          backdrop-filter: blur(10px);
-        }
-
-        .header-inner {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          z-index: 1000;
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 25px 0;
+          padding: 20px 60px;
+          background: rgba(10, 20, 26, 0.95);
+          backdrop-filter: blur(10px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          transform: translateY(0);
+          transition: transform 0.35s ease;
+        }
+
+        .header.hidden {
+          transform: translateY(-100%);
         }
 
         .logo {
-          font-size: 26px;
-          font-weight: bold;
-          letter-spacing: 3px;
-          color: #38bdf8;
-        }
-
-        .nav {
-          display: flex;
-          gap: 35px;
+          font-size: 1.8rem;
+          font-weight: 700;
+          letter-spacing: 1px;
         }
 
         .nav a {
+          margin-left: 30px;
           text-decoration: none;
           color: white;
-          opacity: 0.8;
-          font-size: 15px;
-          transition: 0.2s;
+          opacity: 0.85;
+          transition: opacity 0.2s ease, transform 0.2s ease;
+          cursor: pointer;
         }
 
         .nav a:hover {
@@ -61,193 +90,218 @@ const Home = () => {
           transform: translateY(-1px);
         }
 
-        .hero {
-          height: calc(100vh - 90px);
-          display: flex;
-          align-items: center;
-          background: radial-gradient(circle at top, #1e293b, #020617);
+        .login-btn {
+          padding: 10px 20px;
+          border-radius: 999px;
+          background: #00ffb3;
+          color: #0f2027;
+          font-weight: 700;
+          opacity: 1;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .hero-inner {
-          width: 100%;
+        .login-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(0, 255, 179, 0.35);
+        }
+
+        .hero {
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          padding-top: 80px;
+        }
+
+        .slogan {
+          font-size: 4rem;
+          font-weight: 800;
+          margin-bottom: 20px;
+        }
+
+        .tagline {
+          font-size: 1.2rem;
+          opacity: 0.9;
+          max-width: 500px;
+          margin-bottom: 40px;
+        }
+
+        .start-btn {
+          padding: 15px 50px;
+          font-size: 1.1rem;
+          font-weight: 600;
+          border: none;
+          border-radius: 30px;
+          background: #00ffb3;
+          color: #0f2027;
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .start-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(0, 255, 179, 0.3);
+        }
+
+        .how {
+          padding: 120px 80px;
+          background: #0f2027;
           text-align: center;
         }
 
-        .hero-content {
-          width: 850px;
-          margin: 0 auto;
+        .how h2 {
+          font-size: 2.8rem;
+          margin-bottom: 60px;
         }
 
-        .hero h1 {
-          font-size: 3.8rem;
-          margin-bottom: 25px;
-        }
-
-        .hero span {
-          color: #38bdf8;
-        }
-
-        .hero p {
-          font-size: 1.15rem;
-          opacity: 0.85;
-          margin-bottom: 45px;
-          line-height: 1.7;
-        }
-
-        .hero-buttons {
+        .cards {
           display: flex;
           justify-content: center;
-          gap: 20px;
+          gap: 40px;
+          flex-wrap: wrap;
         }
 
-        .hero-buttons button {
-          padding: 16px 36px;
-          border-radius: 40px;
-          border: none;
-          font-size: 16px;
-          cursor: pointer;
-          transition: 0.25s;
+        .card {
+          background: #203a43;
+          padding: 40px 30px;
+          width: 300px;
+          border-radius: 20px;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .btn-primary {
-          background: #38bdf8;
-          color: #020617;
-          font-weight: bold;
+        .card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
         }
 
-        .btn-primary:hover {
-          transform: scale(1.08);
-          box-shadow: 0 10px 30px rgba(56,189,248,0.35);
+        .card h3 {
+          font-size: 1.4rem;
+          margin-bottom: 15px;
         }
 
-        .btn-secondary {
-          background: transparent;
-          border: 2px solid #38bdf8;
-          color: #38bdf8;
+        .card p {
+          opacity: 0.9;
+          line-height: 1.6;
         }
 
-        .btn-secondary:hover {
-          background: #38bdf8;
-          color: #020617;
+        /* FOOTER */
+
+        .footer {
+          background: #0a141a;
+          padding: 80px 60px 40px;
+          border-top: 1px solid rgba(255,255,255,0.08);
         }
 
-        .features {
-          background: #020617;
-          padding: 120px 0;
+        .footer-content {
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          gap: 40px;
+          margin-bottom: 40px;
         }
 
-        .features h2 {
-          text-align: center;
-          font-size: 2.6rem;
-          margin-bottom: 70px;
-        }
-
-        .features-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 35px;
-        }
-
-        .feature-card {
-          background: #0f172a;
-          padding: 35px;
-          border-radius: 18px;
-          transition: 0.3s;
-          border: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .feature-card:hover {
-          transform: translateY(-12px);
-          border-color: #38bdf8;
-          box-shadow: 0 15px 40px rgba(56,189,248,0.18);
-        }
-
-        .feature-card h3 {
-          margin-bottom: 14px;
-          color: #38bdf8;
+        .footer-section h3 {
+          margin-bottom: 15px;
           font-size: 1.2rem;
         }
 
-        .feature-card p {
+        .footer-section p {
           opacity: 0.85;
           line-height: 1.6;
         }
 
-        .footer {
-          background: #020617;
-          padding: 35px 0;
+        .footer-section a {
+          display: block;
+          color: #00ffb3;
+          text-decoration: none;
+          margin-top: 6px;
+          font-size: 0.95rem;
+        }
+
+        .footer-bottom {
           text-align: center;
+          font-size: 0.85rem;
           opacity: 0.6;
-          font-size: 14px;
+          border-top: 1px solid rgba(255,255,255,0.08);
+          padding-top: 20px;
         }
       `}</style>
 
-      <header className="header">
-        <div className="container header-inner">
-          <div className="logo">THRIVE</div>
+      <div className="home">
+        <header className={`header ${showHeader ? "" : "hidden"}`}>
+          <div className="logo">Thrive</div>
           <nav className="nav">
-            <a href="#">Početna</a>
-            <a href="#">Izazovi</a>
-            <a href="#">Zajednica</a>
-            <a href="#">Prijavite se</a>
+            <a href="#how">Kako radi</a>
+            <a href="#footer">Kontakt</a>
+            <a onClick={() => navigate("/login")} className="login-btn">Prijavi se</a>
           </nav>
-        </div>
-      </header>
+        </header>
 
-      <section className="hero">
-        <div className="container hero-inner">
-          <div className="hero-content">
-            <h1>
-            <span>Van okvira.</span>
-            </h1>
+        <main className="hero">
+          <h1 className="slogan">Van okvira.</h1>
+          <p className="tagline">
+            Svaki dan mali izazov koji te gura van zone komfora.
+          </p>
+          <button onClick={() => navigate("/login")} className="start-btn">
+            Počni
+          </button>
+        </main>
 
-            <p>
-              THRIVE je interaktivna platforma koja ti pomaže da razviješ društvene veštine,
-              povećaš samopouzdanje i svakog dana napraviš mali iskorak iz zone komfora.
-            </p>
+        <section className="how" id="how">
+          <h2>Kako radi</h2>
 
-            <div className="hero-buttons">
-              <button className="btn-primary">Počni danas</button>
-              <button className="btn-secondary">Kako to funkcioniše</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="features">
-        <div className="container">
-          <h2>Kako THRIVE pomaže tvoj rast</h2>
-
-          <div className="features-grid">
-            <div className="feature-card">
+          <div className="cards">
+            <div className="card">
               <h3>Dnevni izazovi</h3>
-              <p>Personalizovani dnevni izazovi koji te postepeno vode van zone komfora.</p>
+              <p>
+                Svaki dan dobijaš mali društveni izazov prilagođen tvom tipu
+                ličnosti i svakodnevnom okruženju.
+              </p>
             </div>
 
-            <div className="feature-card">
-              <h3>Izgraditelj samopouzdanosti</h3>
-              <p>Sistem za izgradnju samopouzdanja kroz male, ali konstantne korake.</p>
+            <div className="card">
+              <h3>Izlazak iz zone komfora</h3>
+              <p>
+                Postepeno se suočavaš sa novim društvenim situacijama i gradiš
+                samopouzdanje bez pritiska.
+              </p>
             </div>
 
-            <div className="feature-card">
+            <div className="card">
               <h3>Praćenje napretka</h3>
-              <p>Vizuelni prikaz tvog rasta i društvenog napretka.</p>
-            </div>
-
-            <div className="feature-card">
-              <h3>Zajednica</h3>
-              <p>Povezivanje sa drugima, timski izazovi i deljenje iskustava.</p>
+              <p>
+                Pratiš svoj napredak, skupljaš uspehe i vidiš koliko si daleko
+                stigao.
+              </p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <footer className="footer">
-        <div className="container">
-          © 2026 THRIVE — Van okvira.
-        </div>
-      </footer>
-    </div>
+        {/* FOOTER */}
+        <footer className="footer" id="footer">
+          <div className="footer-content">
+            <div className="footer-section">
+              <h3>Thrive</h3>
+              <p>
+                Platforma za lični razvoj i izlazak iz zone komfora.
+              </p>
+            </div>
+
+            <div className="footer-section">
+              <h3>Kontakt</h3>
+              <a href="mailto:contact@thriveapp.com">contact@thriveapp.com</a>
+              <a href="tel:+381601234567">+381 60 123 4567</a>
+            </div>
+          </div>
+
+          <div className="footer-bottom">
+            © {new Date().getFullYear()} Thrive. All rights reserved.
+          </div>
+        </footer>
+      </div>
+    </>
   );
 };
 
