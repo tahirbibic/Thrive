@@ -3,7 +3,37 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [isRegister, setIsRegister] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const payload = { email, password };
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.detail || "Login failed");
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      navigate("/");
+    } catch {
+      alert("Backend not reachable");
+    }
+  };
 
   return (
     <>
@@ -48,8 +78,7 @@ const Login = () => {
           gap: 18px;
         }
 
-        .auth-form input,
-        .auth-form select {
+        .auth-form input {
           padding: 14px 16px;
           border-radius: 12px;
           border: none;
@@ -59,19 +88,6 @@ const Login = () => {
 
         .auth-form input::placeholder {
           color: #777;
-        }
-
-        .range-group {
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          font-size: 0.9rem;
-          opacity: 0.9;
-        }
-
-        .range-group span {
-          font-size: 0.85rem;
-          opacity: 0.8;
         }
 
         .submit-btn {
@@ -92,14 +108,14 @@ const Login = () => {
           box-shadow: 0 10px 25px rgba(0,255,179,0.3);
         }
 
-        .switch {
-          margin-top: 25px;
+        .register-link {
+          margin-top: 15px;
           text-align: center;
           font-size: 0.95rem;
           opacity: 0.9;
         }
 
-        .switch span {
+        .register-link span {
           color: #00ffb3;
           cursor: pointer;
           font-weight: 600;
@@ -116,50 +132,36 @@ const Login = () => {
 
       <div className="auth-page">
         <div className="auth-box">
-          <h2>{isRegister ? "Kreiraj nalog" : "Dobrodošao nazad"}</h2>
+          <h2>Dobrodošao nazad</h2>
 
-          <form className="auth-form">
-            {isRegister && (
-              <>
-                <input type="text" placeholder="Ime i prezime" />
-                <input type="number" placeholder="Godine" />
-                <select>
-                  <option value="">Zanimanje</option>
-                  <option value="student">Student</option>
-                  <option value="worker">Zaposlen</option>
-                  <option value="unemployed">Nezaposlen</option>
-                  <option value="other">Ostalo</option>
-                </select>
+          <form className="auth-form" onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="Email adresa"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-                <div className="range-group">
-                  <label>Nivo anksioznosti / samopouzdanja</label>
-                  <input type="range" min="1" max="10" />
-                  <span>1 = veoma anksiozan · 10 = veoma samopouzdan</span>
-                </div>
-              </>
-            )}
+            <input
+              type="password"
+              placeholder="Lozinka"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-            <input type="email" placeholder="Email adresa" />
-            <input type="password" placeholder="Lozinka" />
-
-            <button className="submit-btn">
-              {isRegister ? "Registruj se" : "Prijavi se"}
+            <button className="submit-btn" type="submit">
+              Prijavi se
             </button>
-          </form>
 
-          <div className="switch">
-            {isRegister ? (
-              <>
-                Već imaš nalog?{" "}
-                <span onClick={() => setIsRegister(false)}>Prijavi se</span>
-              </>
-            ) : (
-              <>
-                Nemaš nalog?{" "}
-                <span onClick={() => setIsRegister(true)}>Registruj se</span>
-              </>
-            )}
-          </div>
+            <div className="register-link">
+              Nemaš nalog?{" "}
+              <span onClick={() => navigate("/register")}>
+                Registruj se
+              </span>
+            </div>
+          </form>
 
           <div className="back-home" onClick={() => navigate("/")}>
             ← Nazad na početnu
