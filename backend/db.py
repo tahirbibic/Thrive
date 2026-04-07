@@ -14,13 +14,18 @@ if not MONGO_URI:
 if not DB_NAME:
     raise Exception("DB_NAME not loaded from .env")
 
-client = MongoClient(MONGO_URI)
-
 try:
+    client = MongoClient(
+        MONGO_URI,
+        tlsAllowInvalidCertificates=True,
+        serverSelectionTimeoutMS=5000
+    )
     client.admin.command("ping")
-    print("MongoDB connected")
-except ServerSelectionTimeoutError as e:
-    print("MongoDB connection failed:", e)
+    print("✅ MongoDB connected successfully!")
+except Exception as e:
+    print(f"⚠️ MongoDB connection failed: {e}")
+    print("⚠️ Server will run but database operations will fail")
+    client = MongoClient(MONGO_URI, tlsAllowInvalidCertificates=True)
 
 db = client[DB_NAME]
 users = db["users"]

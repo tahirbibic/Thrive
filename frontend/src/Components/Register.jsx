@@ -28,14 +28,14 @@ const Register = () => {
       name,
       surname,
       gender,
-      job,
+      job: job, // Backend expects 'job' field
       email,
       password,
-      anxiety
+      anxiety: anxiety // Backend expects 'anxiety' field
     };
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/register", {
+      const res = await fetch("http://localhost:5000/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -48,9 +48,33 @@ const Register = () => {
         return;
       }
 
+      // Store authentication token and user data
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+      
+      // Store user data (adjust based on your backend response structure)
+      const userData = {
+        id: data.user?.id || data.id,
+        name: data.user?.name || name,
+        surname: data.user?.surname || surname,
+        gender: data.user?.gender || gender,
+        occupation: data.user?.occupation || job,
+        email: data.user?.email || email,
+        anxietyLevel: data.user?.anxietyLevel || anxiety
+      };
+      
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      // Navigate to home page (user will be logged in)
       navigate("/");
-    } catch {
-      alert("Backend not reachable");
+    } catch (error) {
+      console.error("Registration error:", error);
+      if (error.message === "Failed to fetch") {
+        alert("Cannot connect to server. Please make sure your backend is running on port 5000.\n\nRun: uvicorn main:app --reload --port 5000");
+      } else {
+        alert("Backend not reachable");
+      }
     }
   };
 
@@ -171,6 +195,12 @@ const Register = () => {
           font-size: 1.1rem;
           font-weight: 600;
           cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .submit-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(0, 255, 179, 0.3);
         }
 
         .pwd-wrapper {
@@ -202,6 +232,11 @@ const Register = () => {
           font-size: 0.85rem;
           opacity: 0.7;
           cursor: pointer;
+          transition: opacity 0.2s ease;
+        }
+
+        .back-home:hover {
+          opacity: 1;
         }
       `}</style>
 
